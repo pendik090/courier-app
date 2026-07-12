@@ -115,7 +115,7 @@ GET /api/v1/couriers
 GET /api/v1/couriers?search=budi
 ```
 
-**Search multiple keywords (AND logic)**
+**Search multiple keywords**
 ```bash
 GET /api/v1/couriers?search=budi+agung
 ```
@@ -128,9 +128,9 @@ GET /api/v1/couriers?search=budi+agung
         {
             "id": 1,
             "name": "Budiono Hadi Agung",
-            "email": "ahmad.rizki@courier.id",
-            "phone": "081234567890",
-            "level": 3,
+            "email": "budiagung@gmail.com",
+            "phone": "081234567891",
+            "level": 2,
             "created_at": "2026-07-12T10:00:00+00:00",
             "updated_at": "2026-07-12T10:00:00+00:00"
         }
@@ -157,11 +157,105 @@ GET /api/v1/couriers?level=1,2,3
 ```json
 {
     "data": [
-        { "id": 1, "name": "Ahmad Rizki Pratama", "level": 3 },
-        { "id": 2, "name": "Budi Santoso", "level": 2 },
-        { "id": 5, "name": "Joko Pramono", "level": 1 }
+        {
+            "id": 1,
+            "name": "Ahmad Rizki Pratama",
+            "email": "ahmad.rizki@gmail.com",
+            "phone": "081234567890",
+            "level": 3,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        },
+        {
+            "id": 2,
+            "name": "Budi Hadi Agung",
+            "email": "budiagung@gmail.com",
+            "phone": "081234567891",
+            "level": 2,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        },
+        {
+            "id": 4,
+            "name": "Eko Wahyudi",
+            "email": "eko.wahyudi@gmail.com",
+            "phone": "081234567893",
+            "level": 1,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        },
+        {
+            "id": 6,
+            "name": "Gunawan Wijaya",
+            "email": "gunawan.wijaya@gmail.com",
+            "phone": "081234567895",
+            "level": 3,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        },
+        {
+            "id": 7,
+            "name": "Hendra Kusuma",
+            "email": "hendra.kusuma@gmail.com",
+            "phone": "081234567896",
+            "level": 2,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        },
+        {
+            "id": 9,
+            "name": "Joko Pramono",
+            "email": "joko.pramono@gmail.com",
+            "phone": "081234567898",
+            "level": 1,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        },
+        {
+            "id": 10,
+            "name": "Kartika Sari",
+            "email": "kartika.sari@gmail.com",
+            "phone": "081234567899",
+            "level": 3,
+            "created_at": "2026-07-12T13:20:09+00:00",
+            "updated_at": "2026-07-12T13:20:09+00:00"
+        }
     ],
-    "meta": { "total": 3, "current_page": 1 }
+    "links": {
+        "first": "http://127.0.0.1:8000/api/v1/couriers?page=1",
+        "last": "http://127.0.0.1:8000/api/v1/couriers?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "links": [
+            {
+                "url": null,
+                "label": "&laquo; Previous",
+                "page": null,
+                "active": false
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/v1/couriers?page=1",
+                "label": "1",
+                "page": 1,
+                "active": true
+            },
+            {
+                "url": null,
+                "label": "Next &raquo;",
+                "page": null,
+                "active": false
+            }
+        ],
+        "path": "http://127.0.0.1:8000/api/v1/couriers",
+        "per_page": 15,
+        "to": 7,
+        "total": 7
+    }
 }
 ```
 
@@ -178,18 +272,6 @@ GET /api/v1/couriers
 ```bash
 GET /api/v1/couriers?sort=latest
 ```
-
-**Response**
-```json
-{
-    "data": [
-        { "id": 10, "name": "Kartika Sari", "created_at": "2026-07-12T12:00:00+00:00" },
-        { "id": 9, "name": "Joko Pramono", "created_at": "2026-07-12T11:30:00+00:00" }
-    ],
-    "meta": { "total": 10 }
-}
-```
-
 ---
 
 ### 5. List with Match
@@ -213,11 +295,11 @@ GET /api/v1/couriers/1
     "data": {
         "id": 1,
         "name": "Ahmad Rizki Pratama",
-        "email": "ahmad.rizki@courier.id",
+        "email": "ahmad.rizki@gmail.com",
         "phone": "081234567890",
         "level": 3,
-        "created_at": "2026-07-12T10:00:00+00:00",
-        "updated_at": "2026-07-12T10:00:00+00:00"
+        "created_at": "2026-07-12T13:20:09+00:00",
+        "updated_at": "2026-07-12T13:20:09+00:00"
     }
 }
 ```
@@ -241,8 +323,8 @@ POST /api/v1/couriers
 Content-Type: application/json
 
 {
-    "name": "Budi Hadi Agung",
-    "email": "budi.hadi@courier.id",
+    "name": "Mas Bahlil Ganteng",
+    "email": "masbahlilganteng@gmail.com",
     "phone": "081234567891",
     "level": 3
 }
@@ -253,8 +335,8 @@ Content-Type: application/json
 {
     "data": {
         "id": 11,
-        "name": "Budi Hadi Agung",
-        "email": "budi.hadi@courier.id",
+        "name": "Mas Bahlil Ganteng",
+        "email": "masbahlilganteng@gmail.com",
         "phone": "081234567891",
         "level": 3,
         "created_at": "2026-07-12T12:00:00+00:00",
@@ -284,7 +366,7 @@ Content-Type: application/json
 
 {
     "name": "Ahmad Rizki Pratama Jr.",
-    "email": "ahmad.rizki.jr@courier.id",
+    "email": "ahmad.rizki@gmail.com",
     "phone": "081234567899",
     "level": 4
 }
@@ -296,7 +378,7 @@ Content-Type: application/json
     "data": {
         "id": 1,
         "name": "Ahmad Rizki Pratama Jr.",
-        "email": "ahmad.rizki.jr@courier.id",
+        "email": "ahmad.rizki@gmail.com",
         "phone": "081234567899",
         "level": 4,
         "created_at": "2026-07-12T10:00:00+00:00",
