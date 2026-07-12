@@ -17,7 +17,6 @@ RESTful API untuk Master Data Kurir (Courier) menggunakan Laravel 13.
 - **Language:** PHP 8.3
 - **Database:** MySQL (default), SQLite (testing)
 - **Testing:** Pest
-- **Build Tool:** Vite + Tailwind CSS 4
 
 ## Installation
 
@@ -31,20 +30,17 @@ cp .env.example .env
 # 3. Generate application key
 php artisan key:generate
 
-```
-## CREATE DATABASE
-courier_app
+# 4. Create database (MySQL)
+CREATE DATABASE courier_app;
 
-
-```bash
-# 4. Run migrations & Seeder
+# 5. Run migrations & Seeder
 php artisan migrate
 php artisan db:seed --class=CourierSeeder
 
-# 5. Install npm dependencies
+# 6. Install npm dependencies
 npm install
 
-# 6. Build assets
+# 7. Build assets
 npm run build
 ```
 
@@ -70,27 +66,185 @@ Base URL: `/api/v1/couriers`
 | `PUT/PATCH` | `/api/v1/couriers/{id}` | Update courier | 200, 404, 422 |
 | `DELETE` | `/api/v1/couriers/{id}` | Delete courier | 204, 404 |
 
-### Query Parameters (Index)
+## API Examples
 
-| Param | Example | Description |
-|-------|---------|-------------|
-| `sort` | `?sort=latest` | Sort by created_at DESC (default: name ASC) |
-| `search` | `?search=budi+agung` | search on name |
-| `level` | `?level=1,2,3` | Filter by levels (comma-separated) |
-| `page` | `?page=2` | Pagination cursor |
+### 1. List Couriers (Index)
 
-### Request/Response Examples
+**Default (sorted by name A-Z)**
+```bash
+GET /api/v1/couriers
+```
 
-**Create Courier**
+**Response (200 OK)**
+```json
+{
+    "data": [
+        {
+            "id": 2,
+            "name": "Budi Santoso",
+            "email": "budi.santoso@courier.id",
+            "phone": "081234567891",
+            "level": 2,
+            "created_at": "2026-07-12T10:00:00+00:00",
+            "updated_at": "2026-07-12T10:00:00+00:00"
+        }
+    ],
+    "links": {
+        "first": "http://localhost:8000/api/v1/couriers?page=1",
+        "last": "http://localhost:8000/api/v1/couriers?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta": {
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "per_page": 15,
+        "to": 10,
+        "total": 10
+    }
+}
+```
+
+---
+
+### 2. List with Search
+
+**Search single keyword**
+```bash
+GET /api/v1/couriers?search=budi
+```
+
+**Search multiple keywords (AND logic)**
+```bash
+GET /api/v1/couriers?search=budi+agung
+```
+> Matches names containing BOTH "budi" AND "agung" (e.g., "Budiono Hadi Agung")
+
+**Response**
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Budiono Hadi Agung",
+            "email": "ahmad.rizki@courier.id",
+            "phone": "081234567890",
+            "level": 3,
+            "created_at": "2026-07-12T10:00:00+00:00",
+            "updated_at": "2026-07-12T10:00:00+00:00"
+        }
+    ],
+    "meta": { "total": 1, "current_page": 1 }
+}
+```
+
+---
+
+### 3. List with Level Filter
+
+**Filter by single level**
+```bash
+GET /api/v1/couriers?level=3
+```
+
+**Filter by multiple levels**
+```bash
+GET /api/v1/couriers?level=1,2,3
+```
+
+**Response**
+```json
+{
+    "data": [
+        { "id": 1, "name": "Ahmad Rizki Pratama", "level": 3 },
+        { "id": 2, "name": "Budi Santoso", "level": 2 },
+        { "id": 5, "name": "Joko Pramono", "level": 1 }
+    ],
+    "meta": { "total": 3, "current_page": 1 }
+}
+```
+
+---
+
+### 4. List with Sort
+
+**Sort by name A-Z (default)**
+```bash
+GET /api/v1/couriers
+```
+
+**Sort by newest first**
+```bash
+GET /api/v1/couriers?sort=latest
+```
+
+**Response**
+```json
+{
+    "data": [
+        { "id": 10, "name": "Kartika Sari", "created_at": "2026-07-12T12:00:00+00:00" },
+        { "id": 9, "name": "Joko Pramono", "created_at": "2026-07-12T11:30:00+00:00" }
+    ],
+    "meta": { "total": 10 }
+}
+```
+
+---
+
+### 5. List with Match
+
+**Match Search**
+```bash
+GET /api/v1/couriers?search=budi+agung
+```
+
+---
+
+### 6. Get Courier Detail (Show)
+
+```bash
+GET /api/v1/couriers/1
+```
+
+**Response (200 OK)**
+```json
+{
+    "data": {
+        "id": 1,
+        "name": "Ahmad Rizki Pratama",
+        "email": "ahmad.rizki@courier.id",
+        "phone": "081234567890",
+        "level": 3,
+        "created_at": "2026-07-12T10:00:00+00:00",
+        "updated_at": "2026-07-12T10:00:00+00:00"
+    }
+}
+```
+
+**Response (404 Not Found)**
+```bash
+GET /api/v1/couriers/999
+```
+```json
+{
+    "message": "No query results for model [App\\Models\\Courier] 999."
+}
+```
+
+---
+
+### 7. Create Courier (Store)
+
 ```bash
 POST /api/v1/couriers
 Content-Type: application/json
 
 {
     "name": "Budi Hadi Agung",
-    "email": "budiagung@gmail.com",
+    "email": "budi.hadi@courier.id",
     "phone": "081234567891",
-    "level": 2
+    "level": 3
 }
 ```
 
@@ -98,25 +252,103 @@ Content-Type: application/json
 ```json
 {
     "data": {
-        "id": 1,
-        "name": "John Doe",
-        "email": "john@example.com",
-        "phone": "081234567890",
+        "id": 11,
+        "name": "Budi Hadi Agung",
+        "email": "budi.hadi@courier.id",
+        "phone": "081234567891",
         "level": 3,
-        "created_at": "2026-07-12T20:00:00+00:00",
-        "updated_at": "2026-07-12T20:00:00+00:00"
+        "created_at": "2026-07-12T12:00:00+00:00",
+        "updated_at": "2026-07-12T12:00:00+00:00"
     }
 }
 ```
 
-**List with Search & Filter**
-```bash
-GET /api/v1/couriers?search=budi&level=2,3&sort=latest
+**Response (422 Validation Error)**
+```json
+{
+    "message": "The given data was invalid.",
+    "errors": {
+        "email": ["The email has already been taken."],
+        "level": ["The selected level is invalid."]
+    }
+}
 ```
+
+---
+
+### 8. Update Courier
+
+```bash
+PUT /api/v1/couriers/1
+Content-Type: application/json
+
+{
+    "name": "Ahmad Rizki Pratama Jr.",
+    "email": "ahmad.rizki.jr@courier.id",
+    "phone": "081234567899",
+    "level": 4
+}
+```
+
+**Response (200 OK)**
+```json
+{
+    "data": {
+        "id": 1,
+        "name": "Ahmad Rizki Pratama Jr.",
+        "email": "ahmad.rizki.jr@courier.id",
+        "phone": "081234567899",
+        "level": 4,
+        "created_at": "2026-07-12T10:00:00+00:00",
+        "updated_at": "2026-07-12T12:30:00+00:00"
+    }
+}
+```
+
+**Response (404 Not Found)**
+```bash
+PUT /api/v1/couriers/999
+```
+```json
+{
+    "message": "No query results for model [App\\Models\\Courier] 999."
+}
+```
+
+---
+
+### 9. Delete Courier (Destroy)
+
+```bash
+DELETE /api/v1/couriers/1
+```
+
+**Response (204 No Content)**
+```
+(empty body)
+```
+
+**Response (404 Not Found)**
+```json
+{
+    "message": "No query results for model [App\\Models\\Courier] 999."
+}
+```
+
+---
+
+### 10. Validation Rules
+
+| Field | Rules |
+|-------|-------|
+| `name` | required, string, max:255 |
+| `email` | required, email, max:255, unique |
+| `phone` | required, string, max:15 |
+| `level` | required, integer, in:1,2,3,4,5 |
 
 ## Feature Tests
 
-All tests covering:
+All 21 tests covering:
 
 | Test | Description |
 |------|-------------|
